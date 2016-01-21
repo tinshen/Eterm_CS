@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using DrveTerm;
-using OleBase;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -28,9 +27,6 @@ namespace eterm_base
         public string Eterm_pwd;
         public string Eterm_code;
         public string Eterm_first_comm;
-        //public string is_status;
-        //public string is_connect_status;
-        //public string is_show_txt;
 
         public struct COPYDATASTRUCT
         {
@@ -83,14 +79,14 @@ namespace eterm_base
                     CreatingCtx((int)m.WParam, token);
                     break;
                 default:
-                   base.DefWndProc(ref m);
-                   if (eterm_bga.ib_connect_status)
-                   {
-                       eterm_bga.is_eterm_status = "Host system down";
-                       eterm_bga.ib_connect_status = false;
-                       eterm_bga.ib_dataflag = false;
-                   }
-                    
+                    base.DefWndProc(ref m);
+                    if (eterm_bga.ib_connect_status)
+                    {
+                        eterm_bga.is_eterm_status = "Host system down";
+                        eterm_bga.ib_connect_status = false;
+                        eterm_bga.ib_dataflag = false;
+                    }
+
                     break;
             }
         }
@@ -99,13 +95,18 @@ namespace eterm_base
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 初始化Eterm窗口后，进入方法尝试链接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void eterm_base_Load(object sender, EventArgs e)
         {
 
             int ll_1;
             int ll_2;
             int ll_3;
-            string ls_temp_str, ls_temp;
+            string ls_temp_str;
             hWnd = this.Handle;
             Eterm_host = "";
             Eterm_port = 0;
@@ -114,7 +115,9 @@ namespace eterm_base
             Eterm_code = "";
             Eterm_first_comm = "";
 
+            //开始启动Eterm窗口
             eterm_bga.is_eterm_status = "Start";
+            #region  尝试连接
             ls_temp_str = ConfigurationManager.AppSettings["Eterm_STR"];
             if (string.IsNullOrEmpty(ls_temp_str))
             {
@@ -279,22 +282,12 @@ namespace eterm_base
                 dlg.Dispose();
 
             }
-            try
-            {
-                eTermFactory = new DrveTerm.MatipFactoryClass();
-                eTermFactory._IDrvFactoryEvents_Event_OnConnected += new _IDrvFactoryEvents_OnConnectedEventHandler(Factory_OnConnected);
-                eTermFactory._IDrvFactoryEvents_Event_OnConnectParameters += new _IDrvFactoryEvents_OnConnectParametersEventHandler(Factory_OnConnectParameters);
-                eTermFactory._IDrvFactoryEvents_Event_OnCtxCreated += new _IDrvFactoryEvents_OnCtxCreatedEventHandler(Factory_OnCtxCreated);
-                eTermFactory._IDrvFactoryEvents_Event_OnDisconnected += new _IDrvFactoryEvents_OnDisconnectedEventHandler(Factory_OnDisconnected);
-                eTermFactory.Connect(Eterm_host, Eterm_port, "");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-           
-
+            eTermFactory = new DrveTerm.MatipFactoryClass();
+            eTermFactory._IDrvFactoryEvents_Event_OnConnected += new _IDrvFactoryEvents_OnConnectedEventHandler(Factory_OnConnected);
+            eTermFactory._IDrvFactoryEvents_Event_OnConnectParameters += new _IDrvFactoryEvents_OnConnectParametersEventHandler(Factory_OnConnectParameters);
+            eTermFactory._IDrvFactoryEvents_Event_OnCtxCreated += new _IDrvFactoryEvents_OnCtxCreatedEventHandler(Factory_OnCtxCreated);
+            eTermFactory._IDrvFactoryEvents_Event_OnDisconnected += new _IDrvFactoryEvents_OnDisconnectedEventHandler(Factory_OnDisconnected);
+            eTermFactory.Connect(Eterm_host, Eterm_port, "");
         }
 
         public void ShowMessageBox(string a1, string a2)
@@ -305,35 +298,36 @@ namespace eterm_base
             SendMessage(hWnd, WM_MESSAGE, 0, ref cds);
         }
 
+        /// <summary>
+        /// 尝试连接后，设置连接Eterm状态
+        /// </summary>
+        /// <param name="nCode"></param>
+        /// <param name="bstrStatusMessage"></param>
         public void Factory_OnConnected(int nCode, string bstrStatusMessage)
         {
             if (nCode != 0)
             {
-
                 eterm_bga.is_eterm_status = "connection error:" + bstrStatusMessage;
                 Close();
             }
             else
             {
-
                 eterm_bga.is_eterm_status = "connection successed";
                 eterm_bga.ib_connect_status = true;
                 eterm_bga.il_error_count = 0;
                 eterm_bga.il_retry_count = 0;
-
             }
         }
-
+        /// <summary>
+        /// 设置连接的参数（Eterm账号，密码等）
+        /// </summary>
+        /// <param name="pVal"></param>
         public void Factory_OnConnectParameters(object pVal)
         {
             OleBase.Collection coll = (OleBase.Collection)pVal;
-
-
             coll.set_StringItem("USER", Eterm_user);
             coll.set_StringItem("PWD", Eterm_pwd);
             coll.set_StringItem("VALIDATECODE", Eterm_code);
-
-
         }
 
         public void CreatingCtx(int type, string bstrToken)
@@ -370,29 +364,24 @@ namespace eterm_base
             }
         }
 
+        /// <summary>
+        /// 断开Eterm连接
+        /// </summary>
+        /// <param name="bstrStatusMessage"></param>
         public void Factory_OnDisconnected(string bstrStatusMessage)
         {
-
-
             eterm_bga.is_eterm_status = "Disconnect";
-
-            //  MessageBox.Show("Disconnect");
             Close();
         }
 
         public void ShowData(string bstrData)
         {
-
-
             if (eterm_bga.is_eterm_result.Length != 0)
             {
                 eterm_bga.is_eterm_result = eterm_bga.is_eterm_result + "\r\n";
-
             }
             bstrData = bstrData.Replace("\n", "\r");
             bstrData = bstrData.Replace("\r", "\r\n");
-
-
             eterm_bga.is_eterm_result = eterm_bga.is_eterm_result + bstrData;
             eterm_bga.ib_dataflag = true;
         }
@@ -426,14 +415,17 @@ namespace eterm_base
                     eTermCrsCtx.GetCtx().AsyncSend(Command_text);
                 }
             }
-            catch 
+            catch
             {
-                
+
             }
-            
         }
 
-
+        /// <summary>
+        /// Eterm窗口关闭时，设置一些属性
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void eterm_base_FormClosing(object sender, FormClosingEventArgs e)
         {
             eterm_bga.ib_connect_status = false;
@@ -441,6 +433,11 @@ namespace eterm_base
             eTermFactory.Disconnect();
         }
 
+        /// <summary>
+        /// 检查如果eterm_bga.ib_disconnect设置为true,表示需要断开Eterm窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (eterm_bga.ib_disconnect)

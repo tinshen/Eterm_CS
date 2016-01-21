@@ -10,14 +10,18 @@ namespace Eterm_CS
     {
         public static eterm_bases frm_eterm;
 
-        public static string Eterm_connect()  //ETERM连接
+        /// <summary>
+        /// Eterm连接
+        /// </summary>
+        /// <returns></returns>
+        public static string Eterm_connect()
         {
             int ll_num = 0;
             if (frm_eterm == null)
             {
                 frm_eterm = new eterm_bases();
                 frm_eterm.Show();
-                frm_eterm.Hide();
+                //frm_eterm.Hide();              
                 for (int i = 0; i < 3000; i++)
                 {
                     System.Windows.Forms.Application.DoEvents();
@@ -46,7 +50,7 @@ namespace Eterm_CS
                 if ((ll_num == 1) && (frm_eterm.Eterm_first_comm.Length > 5) && (eterm_bga.is_eterm_status == "connection successed"))
                 {
                     ll_num = 0;
-
+                    //Eterm账号密码连接成功之后，执行SI指令登录工作号
                     frm_eterm.command_exe(frm_eterm.Eterm_first_comm);
                     for (int i = 0; i < 2000; i++)
                     {
@@ -77,11 +81,14 @@ namespace Eterm_CS
             }
             return eterm_bga.is_eterm_status;
         }
+        /// <summary>
+        /// 执行订座指令，返回结果
+        /// </summary>
+        /// <param name="Command_str"></param>
+        /// <returns></returns>
         public static string Eterm_comman(string Command_str)
         {
-
             string ls_temp;
-
             if (frm_eterm != null)
             {
                 if (eterm_bga.ib_connect_status == false && (eterm_bga.is_eterm_status == "disconnect" || eterm_bga.is_eterm_status == "Host system down"))
@@ -93,7 +100,6 @@ namespace Eterm_CS
 
             if (frm_eterm != null)
             {
-
                 eterm_bga.is_eterm_result = "";
             }
             else

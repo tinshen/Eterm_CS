@@ -7,6 +7,9 @@ namespace Eterm_CS
 {
     public class eterm_bga
     {
+        /// <summary>
+        /// Eterm窗口状态，有Start，disconnect
+        /// </summary>
         public static string is_eterm_status = "Start"; //隐藏窗口关闭默认为disconnect，指令开始或开始连接时为Start
         /// <summary>
         /// 指令返回结果
@@ -14,11 +17,11 @@ namespace Eterm_CS
         public static string is_eterm_result = "";
         public static bool ib_dataflag = false;
         /// <summary>
-        /// 断开连接
+        /// 是否需要断开连接，设置为true,则Eterm窗口会关闭。
         /// </summary>
         public static Boolean ib_disconnect = false;
         /// <summary>
-        /// 是否连接
+        /// 是否已连接
         /// </summary>
         public static Boolean ib_connect_status = false;
         /// <summary>

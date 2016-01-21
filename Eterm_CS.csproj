@@ -41,6 +41,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +51,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -79,6 +81,24 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="C2_DBHelp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
@@ -166,6 +186,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Lib\publickey.pke" />
+    <None Include="Lib\regsall.bat" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -187,7 +209,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Lib\publickey.pke" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="10.ico" />
@@ -195,11 +216,13 @@
     <Content Include="Lib\autorun.ico" />
     <Content Include="Lib\C2_DBHelp.dll" />
     <Content Include="Lib\C3_DBHelp.dll" />
+    <Content Include="Lib\DrveTerm.dll" />
     <Content Include="Lib\IDBHelp.dll" />
     <Content Include="Lib\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
     <Content Include="Lib\Microsoft.Practices.EnterpriseLibrary.Data.dll" />
     <Content Include="Lib\Microsoft.Practices.ObjectBuilder2.dll" />
     <Content Include="Lib\Microsoft.Practices.Unity.dll" />
+    <Content Include="Lib\OleBase.dll" />
     <Content Include="Readme.txt" />
     <None Include="Resources\10.ico" />
     <None Include="Web References\DBHelp\DBHelp.disco" />
@@ -244,7 +267,7 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
+      <Isolated>True</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="OleBase">
@@ -253,7 +276,7 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
+      <Isolated>True</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>

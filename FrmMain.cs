@@ -89,7 +89,7 @@ namespace Eterm_CS
             DateTime lt_date, lt_plan_time, lt_next_time, lt_date1;
             DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
 
-            int ll_days = 0, ll_1 = 0;
+            int ll_days = 0;
             string ls_act_code;
 
             if (bga.backgroup_plan == null)
@@ -349,12 +349,8 @@ namespace Eterm_CS
                 }
                 eterm_bga.ib_dataflag = false;
                 com = eterm_fun.Eterm_comman(cmd);//取出每条指令后开始进入下一步，区分出各种情况
-                //1、没有连接上时应该直接
                 timer3.Enabled = false;
                 timer2.Enabled = true;
-                //Debug.WriteLine(num_1.ToString() + "  " + count_1.ToString());
-
-
                 #endregion
             }
 
@@ -372,7 +368,6 @@ namespace Eterm_CS
             try
             {
                 string ls_show_txt = string.Empty, con_str = string.Empty;
-                int ll_num;
                 if (num_2 == num_1 && count_1 > 0 && getDiffSend(DateTime.Now, time) > 20 && timer3.Enabled == false)
                 {
                     timer3.Enabled = true;
