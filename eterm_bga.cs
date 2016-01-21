@@ -28,7 +28,13 @@ namespace Eterm_CS
         /// 指令
         /// </summary>
         public static string is_Command_str = "";
+        /// <summary>
+        /// 重复尝试次数
+        /// </summary>
         public static int il_retry_count = 0;
+        /// <summary>
+        /// 错误计数
+        /// </summary>
         public static int il_error_count = 0;
         public static Boolean ib_flag = false;
     }

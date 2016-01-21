@@ -21,7 +21,7 @@ namespace Eterm_CS
             {
                 frm_eterm = new eterm_bases();
                 frm_eterm.Show();
-                //frm_eterm.Hide();              
+                frm_eterm.Hide();   
                 for (int i = 0; i < 3000; i++)
                 {
                     System.Windows.Forms.Application.DoEvents();
@@ -39,11 +39,17 @@ namespace Eterm_CS
                     System.Windows.Forms.Application.DoEvents();
                     System.Windows.Forms.Application.DoEvents();
                     System.Threading.Thread.Sleep(10);
-                    if ((eterm_bga.is_eterm_status == "connection successed") || eterm_bga.is_eterm_status.IndexOf("connection error") >= 0)
+                    if (eterm_bga.is_eterm_status == "connection successed")
                     {
                         ll_num = 1;
                         eterm_bga.ib_connect_status = true;
                         break;
+                    }
+                    else if (eterm_bga.is_eterm_status.IndexOf("connection error") >= 0)
+                    {
+                        ll_num = 1;
+                        eterm_bga.ib_connect_status = false;
+                        eterm_bga.ib_disconnect = true;
                     }
                 }
 
@@ -105,17 +111,18 @@ namespace Eterm_CS
             else
             {
                 ls_temp = Eterm_connect();
+                //可能的返回结果分别进行处理"connection successed"\ls_temp.IndexOf("connection error") >= 0\"connect timeout"
                 if (ls_temp != "connection successed")
                 {
-                    return eterm_bga.is_eterm_result;
+                    return ls_temp;
                 }
             }
-
+            //连接成功，接着去执行订座指令
             eterm_bga.is_Command_str = "<" + Command_str.ToUpper() + ">" + "\r\n";
             eterm_bga.is_eterm_result = "";
             eterm_bga.is_eterm_status = "Start";
             frm_eterm.command_exe(Command_str);
-            return "";
+            return "Ok";
 
 
         }

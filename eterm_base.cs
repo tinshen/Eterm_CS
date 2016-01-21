@@ -15,6 +15,10 @@ using Eterm_CS;
 
 namespace eterm_base
 {
+    /// <summary>
+    /// Eterm窗口
+    /// 获取配置文件中的Eterm账号。通过Eterm_host、Eterm_port、Eterm_user，Eterm_pwd去连接Eterm
+    /// </summary>
     public partial class eterm_bases : Form
     {
         public const int WM_DATA = 0x0401;
@@ -90,6 +94,10 @@ namespace eterm_base
                     break;
             }
         }
+        /// <summary>
+        /// Eterm窗口
+        /// 获取配置文件中的Eterm账号。通过Eterm_host、Eterm_port、Eterm_user，Eterm_pwd去连接Eterm
+        /// </summary>
         public eterm_bases()
         {
             InitializeComponent();
@@ -102,7 +110,6 @@ namespace eterm_base
         /// <param name="e"></param>
         private void eterm_base_Load(object sender, EventArgs e)
         {
-
             int ll_1;
             int ll_2;
             int ll_3;
@@ -117,7 +124,7 @@ namespace eterm_base
 
             //开始启动Eterm窗口
             eterm_bga.is_eterm_status = "Start";
-            #region  尝试连接
+            #region  获取Eterm账号，并解密
             ls_temp_str = ConfigurationManager.AppSettings["Eterm_STR"];
             if (string.IsNullOrEmpty(ls_temp_str))
             {
@@ -256,12 +263,8 @@ namespace eterm_base
                     }
                 }
             }
-
-
-            // FormConnection cc = new FormConnection();
-            // cc.textBox1.Text = "eterm.hnair.com";
-            // cc.textBox2.Text = "350";
-
+            #endregion
+            //如果从配置文件中获取的Eterm指令没有完整信息，则打开一个窗口手动输入Eterm账号信息
             if ((Eterm_host.Length < 1) || (Eterm_port == 0) || (Eterm_user.Length < 1) || (Eterm_pwd.Length < 1))
             {
                 eterm_connect dlg = new eterm_connect();
@@ -282,6 +285,7 @@ namespace eterm_base
                 dlg.Dispose();
 
             }
+            //创建Eterm接口中的工厂类，用于连接、断开航信的订座系统
             eTermFactory = new DrveTerm.MatipFactoryClass();
             eTermFactory._IDrvFactoryEvents_Event_OnConnected += new _IDrvFactoryEvents_OnConnectedEventHandler(Factory_OnConnected);
             eTermFactory._IDrvFactoryEvents_Event_OnConnectParameters += new _IDrvFactoryEvents_OnConnectParametersEventHandler(Factory_OnConnectParameters);
@@ -308,7 +312,7 @@ namespace eterm_base
             if (nCode != 0)
             {
                 eterm_bga.is_eterm_status = "connection error:" + bstrStatusMessage;
-                Close();
+                //Close();
             }
             else
             {
@@ -318,6 +322,7 @@ namespace eterm_base
                 eterm_bga.il_retry_count = 0;
             }
         }
+
         /// <summary>
         /// 设置连接的参数（Eterm账号，密码等）
         /// </summary>
@@ -370,7 +375,7 @@ namespace eterm_base
         /// <param name="bstrStatusMessage"></param>
         public void Factory_OnDisconnected(string bstrStatusMessage)
         {
-            eterm_bga.is_eterm_status = "Disconnect";
+            eterm_bga.is_eterm_status = "disconnect";
             Close();
         }
 

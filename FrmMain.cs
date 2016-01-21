@@ -348,9 +348,26 @@ namespace Eterm_CS
                         il_loop_count = 0;
                 }
                 eterm_bga.ib_dataflag = false;
-                com = eterm_fun.Eterm_comman(cmd);//取出每条指令后开始进入下一步，区分出各种情况
                 timer3.Enabled = false;
-                timer2.Enabled = true;
+                com = eterm_fun.Eterm_comman(cmd);
+                if (com != "Ok")//如果指令没正常执行，则三次之后跳出
+                {
+                    timer3.Enabled = true;
+                    eterm_bga.il_retry_count += 1;
+                    if (eterm_bga.il_retry_count >= 3)
+                    {
+                        this.textBox1.Text += DateTime.Now.ToString() + "   尝试三次均未获取连接成功，请检查您的Eterm配置！" + System.Environment.NewLine;
+                        this.textBox1.Text += DateTime.Now.ToString() + "   " + cmd + ":" + com + System.Environment.NewLine;
+                        eterm_bga.il_retry_count = 0;//重置为0
+                        timer3.Enabled = false;
+                        timer1.Enabled = true;
+                    }
+                }
+                else  //指令正常执行，将跳转到timer2中进行输出
+                {
+                    eterm_bga.il_retry_count = 0;
+                    timer2.Enabled = true;
+                }
                 #endregion
             }
 
