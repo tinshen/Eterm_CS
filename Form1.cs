@@ -310,6 +310,7 @@ namespace Eterm_CS
             {
                 FrmMain opt = new FrmMain();
                 opt.Text = ls_message;
+                opt.SetFrmText("系统启动，初始化中...");
                 if (opt.IsOpen)
                     return;
                 opt.Icon = Properties.Resources._10;

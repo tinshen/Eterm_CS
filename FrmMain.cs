@@ -48,6 +48,14 @@ namespace Eterm_CS
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// 设置textBox的值
+        /// </summary>
+        /// <param name="str"></param>
+        public void SetFrmText(string str)
+        {
+            textBox_status.Text = str;
+        }
         string ls_id_code = string.Empty, ls_file_type = string.Empty;
         private void FrmMain_Load(object sender, EventArgs e)
         {
@@ -85,6 +93,7 @@ namespace Eterm_CS
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            textBox_status.Text = "系统空闲!";
             InitPlan();
             DateTime lt_date, lt_plan_time, lt_next_time, lt_date1;
             DateTime date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
@@ -92,7 +101,7 @@ namespace Eterm_CS
             int ll_days = 0;
             string ls_act_code;
 
-            if (bga.backgroup_plan == null)
+            if (bga.backgroup_plan == null || bga.backgroup_plan.Rows.Count == 0)
             {
                 textBox_status.Text = "系统未配置" + bga.gl_job + "的自动运行计划！";
                 return;
@@ -118,6 +127,7 @@ namespace Eterm_CS
                 //判断当前时间是否大于下次执行时间，是则执行
                 if (lt_date > lt_next_time)
                 {
+                    textBox_status.Text = "系统开始执行" + bga.gl_job + "！";
                     bga.backgroup_plan.Rows[i]["last_time"] = lt_date;
                     lt_date1 = Convert.ToDateTime(DateTime.Now.AddDays(ll_days).ToString("yyyy-MM-dd") + " " + lt_plan_time.ToString("HH:mm:ss"));
                     bga.backgroup_plan.Rows[i]["next_time"] = lt_date1;
@@ -209,7 +219,7 @@ namespace Eterm_CS
                 }
                 else
                 {
-                    textBox_status.Text = "暂时没有需要执行的计划！";
+                    textBox_status.Text = "系统空闲！暂时没有需要执行的指令包！";
                     timer1.Enabled = true;
                     timer4.Enabled = false;
                 }
@@ -232,7 +242,7 @@ namespace Eterm_CS
                 timer4.Enabled = false;
                 timer1.Enabled = true;
                 ib_flag = true;
-                textBox_status.Text = "休闲时间,关闭订座窗口";
+                textBox_status.Text = "系统空闲！暂时没有需要执行的指令包！";
                 eterm_bga.ib_connect_status = false;
                 eterm_bga.ib_disconnect = true;
             }
